@@ -21,6 +21,7 @@ model Group {
   observations Observation[]
   submissions Submission[]
   feedback Feedback[]
+  works WorkSubmission[]
 }
 model Member {
   id String @id @default(cuid())
@@ -32,6 +33,7 @@ model Member {
   observations Observation[]
   comments Comment[]
   reflection Reflection?
+  works WorkSubmission[]
   @@unique([groupId, nameKey])
 }
 model Observation {
@@ -99,4 +101,45 @@ model LoginLimit {
   key String @id
   count Int @default(0)
   expiresAt DateTime
+}
+model WorkSubmission {
+  id String @id @default(cuid())
+  groupId Int
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  memberId String
+  member Member @relation(fields: [memberId], references: [id], onDelete: Restrict)
+  requestId String
+  fingerprint String
+  title String
+  kind String
+  description String @default("")
+  links Json @default("[]")
+  submittedBy String
+  version Int?
+  publishedAt DateTime?
+  createdAt DateTime @default(now())
+  files WorkFile[]
+  @@unique([memberId, requestId])
+  @@unique([groupId, version])
+  @@index([groupId, publishedAt])
+}
+model WorkFile {
+  id String @id @default(cuid())
+  workId String
+  work WorkSubmission @relation(fields: [workId], references: [id], onDelete: Cascade)
+  filename String
+  mime String
+  size Int
+  chunkCount Int
+  position Int
+  chunks WorkChunk[]
+  @@unique([workId, position])
+}
+model WorkChunk {
+  fileId String
+  file WorkFile @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  index Int
+  bytes Bytes
+  size Int
+  @@id([fileId, index])
 }

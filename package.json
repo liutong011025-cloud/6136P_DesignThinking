@@ -11,7 +11,7 @@
     "start": "next start --hostname 0.0.0.0",
     "postinstall": "prisma generate",
     "typecheck": "tsc --noEmit",
-    "test": "tsx --test tests/validation.test.ts",
+    "test": "tsx --test tests/*.test.ts",
     "test:integration": "node scripts/test-integration.mjs",
     "test:migration": "node scripts/test-migration.mjs",
     "db:deploy": "prisma migrate deploy",

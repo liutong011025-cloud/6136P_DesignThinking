@@ -109,9 +109,10 @@ export async function POST(req: NextRequest) {
       const memberId = z.string().parse(input.memberId);
       await db().$transaction(async tx => {
         await tx.$queryRaw`SELECT id FROM "Member" WHERE id = ${memberId} FOR UPDATE`;
-        const member = await tx.member.findUnique({ where: { id: memberId }, include: { _count: { select: { observations: true, comments: true } }, reflection: true } });
+        const member = await tx.member.findUnique({ where: { id: memberId }, include: { _count: { select: { observations: true, comments: true, works: { where: { publishedAt: { not: null } } } } }, reflection: true } });
         if (!member) fail(404, "找不到该成员。");
-        if (member._count.observations || member._count.comments || member.reflection) fail(409, "该成员已有贡献记录，记录将保留；如需修正，请联系课程负责人。");
+        if (member._count.observations || member._count.comments || member._count.works || member.reflection) fail(409, "该成员已有贡献记录或已提交作品，记录将保留；如需修正，请联系课程负责人。");
+        await tx.workSubmission.deleteMany({ where: { memberId, publishedAt: null } });
         await tx.member.delete({ where: { id: memberId } });
       });
       return json({ ok: true });

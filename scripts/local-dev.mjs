@@ -1,6 +1,7 @@
 import { PGlite } from '@electric-sql/pglite';
 import { PGLiteSocketServer } from '@electric-sql/pglite-socket';
-import { readFile, mkdir } from 'node:fs/promises';
+import { mkdir } from 'node:fs/promises';
+import { applyLocalMigrations } from './local-migrations.mjs';
 import { spawn } from 'node:child_process';
 import { randomBytes } from 'node:crypto';
 import { config } from 'dotenv';
@@ -8,8 +9,7 @@ config({ path: '.env.local' }); config();
 const port = Number(process.env.LOCAL_PG_PORT || 54339);
 await mkdir('.local-data', { recursive: true });
 const database = await PGlite.create('.local-data/int6136p-postgres');
-const exists = await database.query(`SELECT to_regclass('public."Group"') AS present`);
-if (!exists.rows[0].present) await database.exec(await readFile('prisma/migrations/20261007000000_int6136p/migration.sql', 'utf8'));
+await applyLocalMigrations(database);
 const metadata = await database.query('SELECT "courseId" FROM "CourseMetadata" WHERE id = 1');
 if (metadata.rows[0]?.courseId !== 'INT6136P') throw new Error('课程数据库不匹配，请使用 INT6136P 独立的本地数据目录。');
 const server = new PGLiteSocketServer({ db: database, port, host: '127.0.0.1' });

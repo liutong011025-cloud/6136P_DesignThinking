@@ -1,12 +1,12 @@
 import { PGlite } from '@electric-sql/pglite';
 import { PGLiteSocketServer } from '@electric-sql/pglite-socket';
-import { readFile } from 'node:fs/promises';
+import { applyLocalMigrations } from './local-migrations.mjs';
 import { spawn } from 'node:child_process';
 import { once } from 'node:events';
 import { randomBytes } from 'node:crypto';
 import assert from 'node:assert/strict';
 const database = await PGlite.create();
-await database.exec(await readFile('prisma/migrations/20261007000000_int6136p/migration.sql', 'utf8'));
+await applyLocalMigrations(database);
 const socket = new PGLiteSocketServer({ db: database, port: 54341, host: '127.0.0.1' });
 await socket.start();
 const base = 'http://127.0.0.1:3011';
