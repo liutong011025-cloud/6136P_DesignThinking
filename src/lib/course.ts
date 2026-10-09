@@ -4,9 +4,10 @@ export const GROUP_NAMES = [
   "人本智行", "豆包Eduhk限定版", "刚刚好", "收手吧阿组", "8 颗神经元", "脑洞处理器",
   "AI打杂天团", "全都星", "711", "唔知叫咩名", "AIEP复仇者联盟", "Aimoney", "八方来财",
   "合光共燃", "哈吉米南北绿豆", "六个核桃队", "AAA教大苹果供应", "👑Real-Seven-Eleven",
-  "元启TEAM", "缘聚大埔山，科技赴新程", "测试组"
+  "元启TEAM", "缘聚大埔山，科技赴新程", "测试组", "恋上AI"
 ] as const;
-export const OFFICIAL_GROUP_COUNT = 25;
+// Array positions are persisted group IDs; append new groups to preserve existing records.
+export const OFFICIAL_GROUP_COUNT = 26;
 export const PRACTICE_GROUP_ID = 26;
 export const GROUP_MEMBER_LIMIT = 0;
 export const RESEARCH_SOURCES = ["Article", "Journal", "Case", "Material"] as const;

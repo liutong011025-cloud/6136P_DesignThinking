@@ -28,10 +28,12 @@ await request('teacher', 'POST', { action: 'login', group: 'Nicole', password: '
 await request('teacher', 'POST', { action: 'login', group: 'Nicole', password: process.env.TEST_TEACHER_PASSWORD });
 await request('teacher', 'POST', { action: 'checkStep', step: 'review' }, '', 403);
 let classroom = await request('teacher', 'GET');
-assert.equal(classroom.groups.length, 26); assert.equal(classroom.groups[0].name, '獅子山上的青春'); assert.equal(classroom.groups[24].name, '缘聚大埔山，科技赴新程'); assert.equal(classroom.groups[25].name, '测试组');
+assert.deepEqual(classroom.groups.map(g => g.id), Array.from({ length: 27 }, (_, i) => i + 1)); assert.equal(classroom.groups[0].name, '獅子山上的青春'); assert.equal(classroom.groups[24].name, '缘聚大埔山，科技赴新程'); assert.equal(classroom.groups[25].name, '测试组'); assert.equal(classroom.groups[26].name, '恋上AI');
 for (let i = 1; i <= 8; i++) await request('trial' + i, 'POST', { action: 'login', group: 26, name: '试用成员 ' + i });
 classroom = await request('teacher', 'GET');
-const formal = classroom.groups.filter(g => g.id !== 26); assert.equal(formal.length, 25); assert.equal(formal.reduce((n, g) => n + g.members.length, 0), 0); assert.equal(classroom.groups[25].members.length, 8);
+const formal = classroom.groups.filter(g => g.id !== 26); assert.equal(formal.length, 26); assert.equal(formal.reduce((n, g) => n + g.members.length, 0), 0); assert.equal(classroom.groups[25].members.length, 8);
+await request('new-group', 'POST', { action: 'login', group: 27, name: '新增组测试成员' });
+const newGroup = await request('new-group', 'GET'); assert.equal(newGroup.group.id, 27); assert.equal(newGroup.group.name, '恋上AI'); assert.equal(newGroup.group.members.length, 1);
 for (let i = 1; i <= 8; i++) await request(i === 1 ? 'alice' : i === 2 ? 'bob' : 'member' + i, 'POST', { action: 'login', group: 1, name: i === 1 ? 'QA Alice' : i === 2 ? 'QA Bob' : '成员 ' + i });
 await request('repeat', 'POST', { action: 'login', group: 1, name: '  qa   alice  ' });
 let project = await request('alice', 'GET'); assert.equal(project.group.members.length, 8); const aliceId = project.session.memberId;
@@ -168,4 +170,4 @@ await works('member8', { ...linkWork, requestId: 'integration-unused-member-draf
 await request('teacher', 'POST', { action: 'removeMember', memberId: aliceId }, '', 409);
 const unused = await request('member8', 'GET'); await request('teacher', 'POST', { action: 'removeMember', memberId: unused.session.memberId }); await request('member8', 'GET', null, '', 401);
 await request('alice', 'POST', { action: 'logout' }); await request('alice', 'GET', null, '', 401);
-console.log('PASS：独立课程与会话、25 组及测试组、不假设人数上限、中文错误、真实引用字段与链接校验、研究依据与阶段必填、个人贡献、附件权限、组间隔离、环节资料归属、并发冲突、17 分钟建议不阻挡、可选留空、历史版本、教师反馈、独立作品提交、幂等创建/分块/发布、完整性与文件签名、作品权限、并发版本、已提交作品成员保护。');
+console.log('PASS：独立课程与会话、26 个正式组及原编号测试组、恋上AI 登录、不假设人数上限、中文错误、真实引用字段与链接校验、研究依据与阶段必填、个人贡献、附件权限、组间隔离、环节资料归属、并发冲突、17 分钟建议不阻挡、可选留空、历史版本、教师反馈、独立作品提交、幂等创建/分块/发布、完整性与文件签名、作品权限、并发版本、已提交作品成员保护。');

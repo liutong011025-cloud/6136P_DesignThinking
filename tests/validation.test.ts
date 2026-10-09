@@ -27,8 +27,8 @@ function validDraft() {
     discussionQuestions: "我们如何判断讨论支持是否促进了学习？"
   });
 }
-test("25 个正式组及独立测试组，没有自行设定成员人数上限", () => {
-  assert.equal(GROUP_NAMES.length, 26); assert.equal(OFFICIAL_GROUP_COUNT, 25); assert.equal(PRACTICE_GROUP_ID, 26); assert.equal(GROUP_MEMBER_LIMIT, 0); assert.equal(GROUP_NAMES[25], "测试组");
+test("26 个正式组及独立测试组，新增组不改变测试组编号，没有自行设定成员人数上限", () => {
+  assert.equal(GROUP_NAMES.length, 27); assert.equal(OFFICIAL_GROUP_COUNT, 26); assert.equal(PRACTICE_GROUP_ID, 26); assert.equal(GROUP_MEMBER_LIMIT, 0); assert.equal(GROUP_NAMES[25], "测试组"); assert.equal(GROUP_NAMES[26], "恋上AI");
 });
 test("研究文章必须有引用与有效发表年份", () => {
   assert.equal(observationSchema.parse(reading).publicationYear, 2024);

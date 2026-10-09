@@ -19,7 +19,7 @@ SESSION_SECRET 用于验证登录状态，学生不用填写。它不是教师�
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ~~~
 
-5. 保留默认 Next.js 框架。项目已设置 npm run vercel-build，使用 Node 22.x。首次部署会校验变量并创建数据表及 25 个正式组和独立测试组。
+5. 保留默认 Next.js 框架。项目已设置 npm run vercel-build，使用 Node 22.x。首次部署会校验变量并创建数据表及 26 个正式组和独立测试组。
 6. 如果添加变量前已经部署失败，保存变量后，在 Deployments 中重新点击 Redeploy。旧部署不会自动获得新变量。
 7. 看到 Ready 后，打开正式网址。检查组名下拉菜单，先在测试组中试用，再用 Nicole 查看各组进度。
 
